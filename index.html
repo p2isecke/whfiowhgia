@@ -1,0 +1,689 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>WHFIOWHGIA</title>
+<meta name="description" content="Will He Finish It Or Will He Give It Away? A fan-made scoreboard of every Deep Pocket Monster complete-the-set challenge against Steve the clock.">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@600;800;900&family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: sticky header with the one live Steve; top row pairs the latest video (left) with the scoreboard (right); then a black stats band, the logo-tile archive, rematches and side quests */
+:root{
+  --page:#F3F3F0; --page-2:#E9E9E4; --surface:#FFFFFF;
+  --ink:#141416; --ink-2:#3A3A40; --muted:#6B6B73; --line:rgba(20,20,22,.12);
+  --steve:#141416; --rim:#E2232B; --rim-ink:#C11B22; --digit:#FFFFFF;
+  --dpm:#FFCB05; --dpm-ink:#7A5C00; --dpm-soft:#FFF3C2; --steve-soft:#FBE0E1;
+  --tile:#141416; --tile-edge:#141416;
+  --shadow:rgba(20,20,22,.3);
+  --display:"Rubik","Arial Rounded MT Bold",system-ui,sans-serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --page:#1A1B21; --page-2:#22232B; --surface:#2A2B34;
+  --ink:#F4F4F1; --ink-2:#D2D2D8; --muted:#A0A0AA; --line:rgba(244,244,241,.13);
+  --rim-ink:#FF6B70; --dpm-ink:#FFD84D; --dpm-soft:#3A3318; --steve-soft:#42222A;
+  --tile:#0E0E10; --tile-edge:#34343C; --shadow:rgba(0,0,0,.6);
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --page:#1A1B21; --page-2:#22232B; --surface:#2A2B34;
+  --ink:#F4F4F1; --ink-2:#D2D2D8; --muted:#A0A0AA; --line:rgba(244,244,241,.13);
+  --rim-ink:#FF6B70; --dpm-ink:#FFD84D; --dpm-soft:#3A3318; --steve-soft:#42222A;
+  --tile:#0E0E10; --tile-edge:#34343C; --shadow:rgba(0,0,0,.6);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:120px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--page);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--page)}
+img{max-width:100%;display:block}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--dpm);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1160px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);font-weight:900;line-height:.95;letter-spacing:-.01em;margin:0;text-wrap:balance}
+.label{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0}
+.num{font-variant-numeric:tabular-nums}
+section{padding-block:64px}
+.sec-head{display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap;margin-bottom:26px}
+.sec-head h2{font-size:clamp(38px,5.5vw,64px);margin-top:8px}
+.sec-head p{max-width:46ch;color:var(--ink-2);margin:0}
+.btn{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:15px;text-decoration:none;padding:12px 18px;border-radius:14px;background:var(--ink);color:var(--page);border:2px solid var(--ink);transition:transform .15s;cursor:pointer}
+.btn:hover{transform:translateY(-2px)}
+.icon-btn{border:1.5px solid var(--line);background:var(--surface);border-radius:99px;padding:6px 12px;font-size:13px;font-weight:600;cursor:pointer}
+.icon-btn:disabled{opacity:.4;cursor:default}
+
+/* ---------- Steve and Diglett ---------- */
+.steve,.diglett{display:block;overflow:visible}
+.steve .body{fill:var(--steve);stroke:var(--rim);stroke-width:7}
+.steve .dig{fill:var(--digit);font-family:var(--display);font-weight:800;font-size:50px;letter-spacing:1px}
+.steve .eye{fill:#fff;stroke:#141416;stroke-width:3}
+.steve .pupil{fill:#141416}
+.steve .glint{fill:#fff}
+.steve .smile{fill:none;stroke:#141416;stroke-width:6;stroke-linecap:round}
+.steve .brow{fill:#141416;stroke:#fff;stroke-width:2.5;paint-order:stroke;transition:transform .35s cubic-bezier(.3,1.6,.5,1)}
+.steve .lids{fill:#141416;transform-box:fill-box;transform-origin:center;transform:scaleY(0)}
+.blink .lids{animation:blink 5.5s infinite}
+@keyframes blink{0%,94%,100%{transform:scaleY(0)}96%{transform:scaleY(1)}}
+.colon{animation:colon 1s steps(1) infinite}
+@keyframes colon{50%{opacity:.15}}
+@media (prefers-reduced-motion:reduce){.blink .lids,.colon{animation:none}}
+
+/* ---------- header ---------- */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--page) 90%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:16px;padding-block:8px}
+.brand{display:flex;align-items:center;gap:14px;text-decoration:none;margin-right:auto}
+.brand svg{width:104px;height:auto}
+.brand .name{display:flex;flex-direction:column;gap:3px}
+.brand b{font-family:var(--display);font-weight:900;font-size:clamp(22px,3vw,32px);letter-spacing:.01em;line-height:1}
+.brand small{font-size:13px;font-weight:600;color:var(--muted);line-height:1.2}
+@media (max-width:520px){.brand small{display:none}}
+.nav{display:flex;gap:2px}
+.nav a{font-weight:600;font-size:14px;text-decoration:none;padding:7px 12px;border-radius:99px;color:var(--ink-2)}
+.nav a:hover{background:var(--page-2);color:var(--ink)}
+@media (max-width:860px){.nav{display:none}.brand svg{width:84px}}
+
+/* ---------- result chips ---------- */
+.res{display:inline-flex;align-items:center;gap:6px;font-family:var(--display);font-weight:800;font-size:12px;border-radius:8px;padding:3px 8px 2px 4px;white-space:nowrap}
+.res svg{width:24px;height:auto}
+.res.W{background:#FFCB05;color:#141416}
+.res.L{background:#E2232B;color:#fff}
+
+/* ---------- top row: latest video + scoreboard ---------- */
+.lead{padding-block:36px 56px}
+.lead-grid{display:grid;grid-template-columns:1.55fr 1fr;gap:24px;align-items:start}
+.latest{display:flex;flex-direction:column;gap:14px;min-width:0}
+.thumb{position:relative;display:block;border-radius:20px;overflow:hidden;aspect-ratio:16/9;background:#141416;box-shadow:0 18px 36px -20px var(--shadow)}
+.thumb img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.thumb:hover img{transform:scale(1.03)}
+.thumb .play{position:absolute;inset:0;display:grid;place-items:center}
+.thumb .play span{width:76px;height:54px;border-radius:16px;background:#E2232B;display:grid;place-items:center;box-shadow:0 8px 20px rgba(0,0,0,.35);transition:transform .2s}
+.thumb:hover .play span{transform:scale(1.08)}
+.thumb .play span::before{content:"";border-left:20px solid #fff;border-top:12px solid transparent;border-bottom:12px solid transparent;margin-left:5px}
+.thumb .tag{position:absolute;left:14px;top:14px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;background:#141416;color:#fff;border:2px solid #E2232B;border-radius:8px;padding:4px 9px}
+.latest-info{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.latest-info img.logo{width:120px;height:auto}
+.latest-info h1{font-size:clamp(32px,4.4vw,52px)}
+.latest .meta{display:flex;gap:6px 16px;flex-wrap:wrap;font-size:15px;color:var(--ink-2)}
+.latest .meta b{color:var(--ink)}
+.latest .story{margin:0;color:var(--ink-2);max-width:62ch}
+.reveal{width:100%;padding:13px;border-radius:14px;border:2px dashed var(--line);background:transparent;font-weight:700;cursor:pointer}
+
+.score{background:#141416;color:#F4F4F1;border-radius:20px;border:3px solid #E2232B;padding:24px;display:flex;flex-direction:column;gap:14px}
+.score .label{color:#A1A1A9}
+.score-row{display:flex;align-items:center;gap:14px;padding:6px 0}
+.score-row .who{flex:1;display:flex;flex-direction:column}
+.score-row .who b{font-family:var(--display);font-weight:900;font-size:26px;line-height:1}
+.score-row .who small{font-size:13px;color:#A1A1A9}
+.score-row .n{font-family:var(--display);font-weight:900;font-size:clamp(76px,9vw,112px);line-height:.85}
+.score-row.d .n{color:#FFCB05}
+.score-row.s .n{color:#FF4A51}
+.score-row svg{width:58px;flex:none}
+.score hr{border:0;border-top:1px solid #2A2A30;margin:0}
+.score-foot{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+.score-foot div{background:#1C1C20;border-radius:12px;padding:10px 12px}
+.score-foot b{display:block;font-family:var(--display);font-weight:800;font-size:26px;line-height:1.1}
+.score-foot span{font-size:12px;color:#A1A1A9}
+@media (max-width:900px){.lead-grid{grid-template-columns:1fr}}
+
+/* ---------- stats band (preview 1 look) ---------- */
+.board{background:#141416;color:#F4F4F1;border-block:6px solid #E2232B}
+.board .label{color:#A1A1A9}
+.board .sec-head p{color:#C9C9CF}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.bs{background:#1C1C20;border-radius:16px;padding:16px 18px;min-width:0;display:flex;flex-direction:column;gap:2px;text-decoration:none;color:#F4F4F1;border:2px solid transparent;transition:border-color .15s}
+a.bs:hover{border-color:#FFCB05}
+.bs .k{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#A1A1A9}
+.bs .v{font-family:var(--display);font-weight:800;font-size:40px;line-height:1.05;margin-top:6px}
+.bs .v small{font-size:.5em;color:#A1A1A9;font-weight:600;margin-left:3px}
+.bs .s{font-size:13px;color:#C9C9CF}
+.bs .v.y{color:#FFCB05} .bs .v.r{color:#FF4A51}
+.bs .go{margin-top:auto;padding-top:8px;font-size:13px;font-weight:700;color:#FFCB05}
+@media (max-width:900px){.stats{grid-template-columns:1fr 1fr}}
+@media (max-width:460px){.stats{grid-template-columns:1fr}}
+.bp{background:#1C1C20;border-radius:16px;padding:20px;margin-top:12px;min-width:0}
+.bp h3{font-size:26px;font-weight:800;margin-top:6px}
+.bp > p{color:#C9C9CF;font-size:14px;margin:6px 0 0}
+.duo{display:grid;gap:12px;margin-top:12px}
+.duo .bp{margin-top:0}
+.rematches{display:grid;grid-template-columns:1fr 1fr;column-gap:32px;margin-top:12px}
+@media (max-width:720px){.rematches{grid-template-columns:1fr}}
+.rm{display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center;padding:11px 0;border-top:1px solid #2A2A30}
+.rm h4{margin:0;font-family:var(--display);font-weight:800;font-size:17px;color:#F4F4F1}
+.rm .tries{grid-column:1/-1;display:flex;gap:6px;flex-wrap:wrap}
+.try{display:flex;align-items:center;gap:6px;padding:3px 8px;border-radius:8px;border:1.5px solid #34343C;font-size:12px;color:#C9C9CF;cursor:pointer;background:transparent}
+.try:hover{border-color:#E2232B}
+.try b{font-family:var(--display);font-weight:800}
+.try.W b{color:#FFCB05} .try.L b{color:#FF4A51}
+.rm .st{grid-column:2;grid-row:1;font-family:var(--mono);font-size:11px;padding:3px 8px;border-radius:99px;white-space:nowrap}
+.rm .st.W{background:rgba(255,203,5,.15);color:#FFCB05} .rm .st.L{background:rgba(255,74,81,.15);color:#FF4A51}
+.chart{overflow-x:auto;margin-top:12px}
+.chart svg{display:block;width:100%;min-width:440px;height:auto}
+.chart .g{stroke:rgba(255,255,255,.08)}
+.chart .z{stroke:rgba(255,255,255,.45);stroke-dasharray:4 4}
+.chart .ax{fill:#A1A1A9;font-family:var(--mono);font-size:11px}
+.chart .ln{fill:none;stroke:#F4F4F1;stroke-width:2.5;stroke-linejoin:round}
+.chart .ar{fill:rgba(255,203,5,.14)}
+.chart .dW{fill:#FFCB05} .chart .dL{fill:#FF4A51}
+.chart .lab{fill:#F4F4F1;font-family:var(--mono);font-size:12px}
+.chart a circle{cursor:pointer}
+details.about{margin-top:20px}
+details.about summary{cursor:pointer;font-weight:700;font-size:14px;display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:99px;background:#1C1C20;color:#F4F4F1}
+details.about summary::marker{content:""}
+details.about summary::before{content:"+";font-family:var(--mono)}
+details.about[open] summary::before{content:"–"}
+details.about div{margin-top:12px;max-width:80ch;font-size:14px;line-height:1.6;color:#C9C9CF}
+details.about p{margin:0 0 8px}
+
+/* ---------- previous challenges (set logo tiles) ---------- */
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:28px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips button{border:1.5px solid var(--line);background:var(--surface);padding:8px 14px;border-radius:99px;font-size:14px;font-weight:600;cursor:pointer}
+.chips button[aria-pressed="true"]{background:var(--ink);color:var(--page);border-color:var(--ink)}
+.controls select{font:inherit;font-size:14px;font-weight:600;padding:8px 12px;border-radius:99px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:26px 18px}
+.item{appearance:none;border:0;background:none;padding:0;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:10px;min-width:0}
+.tile{position:relative;display:grid;place-items:center;aspect-ratio:4/3;background:radial-gradient(ellipse at 50% 40%,#26262C,var(--tile) 70%);border:2px solid var(--tile-edge);border-radius:16px;overflow:hidden;transition:border-color .2s}
+.tile img.logo{max-width:78%;max-height:56%;object-fit:contain;transition:transform .3s cubic-bezier(.3,1.4,.5,1)}
+.tile .clock{position:absolute;left:10px;bottom:10px;font-family:var(--display);font-weight:800;font-size:13px;color:#fff;background:#141416;border:2px solid #E2232B;border-radius:7px;padding:2px 7px 1px}
+.tile .no{position:absolute;left:12px;top:9px;font-family:var(--mono);font-size:11px;color:#8E8E98}
+.tile .res{position:absolute;right:8px;bottom:8px}
+.item:hover .tile,.item:focus-visible .tile{border-color:#E2232B}
+.item:hover img.logo{transform:scale(1.07) rotate(-2deg)}
+.item .meta b{display:block;font-family:var(--display);font-weight:800;font-size:19px;line-height:1.1}
+.item .meta span{font-size:13px;color:var(--muted)}
+.empty{grid-column:1/-1;padding:40px;text-align:center;color:var(--muted);border:2px dashed var(--line);border-radius:16px}
+
+/* ---------- side quests (preview 1 style) ---------- */
+.quests{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,330px),1fr));gap:16px}
+.quest{display:grid;grid-template-columns:96px 1fr;gap:16px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;min-width:0}
+.quest .art{border-radius:8px;overflow:hidden;align-self:start;background:#fff;box-shadow:0 8px 16px -10px rgba(0,0,0,.4);transform:rotate(-2deg)}
+.quest .art img{width:100%;aspect-ratio:63/88;object-fit:cover}
+.quest .art.jp{aspect-ratio:63/88;display:grid;place-items:center;background:#BC002D}
+.quest .art.jp span{display:grid;place-items:center;width:58px;height:58px;border-radius:50%;background:#fff;color:#BC002D;font-family:var(--display);font-weight:900;font-size:18px}
+.quest .date{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.quest h3{font-size:24px;font-weight:800;margin-top:4px}
+.quest p{margin:6px 0 0;font-size:14px;color:var(--ink-2)}
+.quest .out{margin-top:10px}
+.quest .links{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:14px;font-weight:700}
+.quest .links a{color:var(--rim-ink);text-decoration:none}
+.quest .links a:hover{text-decoration:underline}
+
+/* ---------- verdict + dialog ---------- */
+.verdict{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:16px}
+.verdict.W{background:var(--dpm-soft)} .verdict.L{background:var(--steve-soft)}
+.verdict svg{width:80px;flex:none}
+.verdict b{font-family:var(--display);font-weight:900;font-size:22px;display:block;line-height:1.05}
+.verdict.W b{color:var(--dpm-ink)} .verdict.L b{color:var(--rim-ink)}
+.verdict .proof{font-size:13px;color:var(--ink-2)}
+dialog{border:0;padding:0;border-radius:24px;background:var(--surface);color:var(--ink);width:min(780px,calc(100vw - 32px));max-height:calc(100dvh - 40px);box-shadow:0 30px 80px rgba(0,0,0,.45)}
+dialog::backdrop{background:rgba(10,10,12,.6);backdrop-filter:blur(3px)}
+.dlg{display:grid;grid-template-columns:260px 1fr;gap:28px;padding:28px}
+.dlg .art{position:relative;align-self:start}
+.dlg h3{font-size:42px;margin-top:6px}
+.dlg dl{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:16px 0 0;font-size:15px}
+.dlg dt{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding-top:3px}
+.dlg dd{margin:0;min-width:0}
+.dlg .story{font-size:16px;color:var(--ink-2);margin:16px 0 18px}
+.dlg-foot{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:20px}
+.dlg-foot .btn{padding:11px 16px;font-size:14px}
+.dlg-nav{margin-left:auto;display:flex;gap:6px}
+.close{position:absolute;top:12px;right:12px;width:38px;height:38px;border-radius:50%;border:1.5px solid var(--line);background:var(--surface);cursor:pointer;font-size:18px;line-height:1;z-index:2}
+@media (max-width:640px){.dlg{grid-template-columns:1fr;padding:22px}.dlg h3{font-size:34px}}
+
+/* the Team Rocket curse, shown in the dialog */
+.curse-tag{display:none}
+.cursed .curse-tag,.broken .curse-tag{display:inline-flex;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;border-radius:99px;margin-top:10px}
+.cursed .curse-tag{background:#2A1240;color:#D9B8FF}
+.broken .curse-tag{background:#FFCB05;color:#141416}
+.cursed{background:radial-gradient(circle at 20% 30%,rgba(122,46,196,.35),transparent 55%),var(--surface)}
+.cursed .art .tile{border-color:#7A2EC4;box-shadow:0 0 30px rgba(150,70,255,.55)}
+.cursed .art img.logo{filter:drop-shadow(0 0 14px rgba(150,70,255,.9)) hue-rotate(250deg) saturate(1.4) brightness(.85);animation:haunt 2.6s ease-in-out infinite}
+.cursed .art .tile::after{content:"CURSED";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-12deg);font-family:var(--display);font-weight:900;font-size:30px;color:#D9B8FF;border:3px solid #D9B8FF;border-radius:8px;padding:4px 10px 1px;background:rgba(42,18,64,.85);letter-spacing:.05em}
+@keyframes haunt{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-5px) rotate(1deg)}}
+.broken .art .tile{border-color:#FFCB05;box-shadow:0 0 30px rgba(255,203,5,.55)}
+.broken .art .tile::after{content:"CURSE BROKEN";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-12deg);font-family:var(--display);font-weight:900;font-size:22px;color:#141416;background:#FFCB05;border-radius:8px;padding:5px 10px 2px;white-space:nowrap}
+@media (prefers-reduced-motion:reduce){.cursed .art img.logo{animation:none}}
+
+/* ---------- spoiler-free mode ---------- */
+.sf-btn{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 12px 5px 6px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+.sf-btn i{position:relative;width:30px;height:18px;border-radius:99px;background:var(--line);transition:background .2s}
+.sf-btn i::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--surface);box-shadow:0 1px 2px rgba(0,0,0,.3);transition:transform .2s}
+.sf-btn[aria-pressed="true"] i{background:var(--rim)}
+.sf-btn[aria-pressed="true"] i::after{transform:translateX(12px)}
+.sf .stats,.sf .bp,.sf .score-foot{display:none}
+
+.sf .sf-only{display:flex}
+.sf-only{display:none}
+.sf-note{align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:14px;border-radius:12px;padding:10px 14px;background:#1C1C20;color:#F4F4F1}
+.sf-note button{border:0;border-radius:99px;padding:6px 12px;font-weight:700;font-size:13px;background:#FFCB05;color:#141416;cursor:pointer}
+.sf .chips [data-f="W"],.sf .chips [data-f="L"]{display:none}
+.moment{display:block;margin-top:6px;font-size:14px;color:var(--ink-2)}
+.verdict .moment{font-size:15px;color:var(--ink);margin:4px 0 2px}
+
+footer{border-top:1px solid var(--line);padding-block:36px 56px;font-size:14px;color:var(--muted)}
+footer p{margin:0 0 10px;max-width:84ch}
+footer b{color:var(--ink)}
+footer .links{display:flex;gap:16px;font-weight:700}
+footer .links a{color:var(--ink)}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="WHFIOWHGIA, back to top"><span id="hdrSteve" data-steve="angry" data-digits="02:31" data-blink="1"></span><span class="name"><b>WHFIOWHGIA</b><small>Will He Finish It Or Will He Give It Away?</small></span></a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#top">Latest</a><a href="#stats">Stats</a><a href="#challenges">Previous challenges</a><a href="#side-quests">Side quests</a>
+    </nav>
+    <button class="sf-btn" type="button" id="sfBtn" aria-pressed="false" title="Hide every result on the site"><i aria-hidden="true"></i>Spoiler-free</button>
+    <button class="icon-btn" type="button" id="themeBtn" aria-label="Change theme">Auto</button>
+  </div>
+</header>
+
+<main id="top">
+  <div class="lead">
+    <div class="wrap lead-grid">
+      <div class="latest" id="latestBox"></div>
+      <aside class="score" aria-label="Overall record">
+        <div class="score-row d"><span data-dig="happy"></span><span class="who"><b>DPM</b><small>sets completed</small></span><span class="n num" id="dpmN"></span></div>
+        <hr>
+        <div class="score-row s"><span data-steve="happy" data-digits="00:00"></span><span class="who"><b>Steve</b><small>binders given away</small></span><span class="n num" id="steveN"></span></div>
+        <div class="score-foot" id="scoreFoot"></div>
+        <div class="sf-note sf-only"><span>Spoiler-free is on. The score is hidden.</span><button type="button" data-sf-off>Show results</button></div>
+      </aside>
+    </div>
+  </div>
+
+  <section class="board" id="stats" aria-labelledby="stats-title">
+    <div class="wrap">
+      <div class="sec-head"><div><p class="label">By the numbers</p><h2 id="stats-title">Stats</h2></div></div>
+      <div class="sf-note sf-only" style="margin-bottom:12px"><span>Spoiler-free is on. Stats are hidden.</span><button type="button" data-sf-off>Show results</button></div>
+      <div class="stats" id="stats-grid"></div>
+      <div class="duo">
+        <div class="bp">
+          <p class="label">Tug of war</p>
+          <h3>DPM's lead over Steve, attempt by attempt</h3>
+          <p>Above the dashed line, DPM is ahead. He fell behind for the first time after the second Team Rocket loss, then won 5 in a row.</p>
+          <div class="chart" id="chart"></div>
+        </div>
+        <div class="bp" id="rematches">
+          <p class="label">Unfinished business</p>
+          <h3>Rematches</h3>
+          <div class="rematches" id="rmList"></div>
+        </div>
+      </div>
+      <details class="about">
+        <summary>About the data</summary>
+        <div>
+          <p>Covers the complete-set challenges only, from Sep 2022 to Oct 2026. Side quests are listed separately and don't count toward the score.</p>
+          <p>For attempts #1 to #20, results come from the running record DPM states in each video's description (for example, "my current record is 10 wins and 9 losses"). For #21 to #27 he stopped stating it, so those results come from the video comments, where fans congratulate or commiserate and some keep a tally. Their tallies match this scoreboard.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section id="challenges" aria-labelledby="ch-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><p class="label">The archive</p><h2 id="ch-title">Previous challenges</h2></div>
+      </div>
+      <div class="controls">
+        <div class="chips" role="group" aria-label="Filter challenges" id="filters">
+          <button type="button" data-f="all" aria-pressed="true">All</button>
+          <button type="button" data-f="W" aria-pressed="false">DPM wins</button>
+          <button type="button" data-f="L" aria-pressed="false">Steve wins</button>
+          <button type="button" data-f="vintage" aria-pressed="false">Vintage</button>
+          <button type="button" data-f="modern" aria-pressed="false">Modern</button>
+        </div>
+        <select id="sort" aria-label="Sort challenges">
+          <option value="new">Newest first</option>
+          <option value="old">Oldest first</option>
+          <option value="fast">Shortest clock</option>
+        </select>
+      </div>
+      <div class="grid" id="grid"></div>
+
+    </div>
+  </section>
+
+  <section id="side-quests" style="background:var(--page-2)" aria-labelledby="sq-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><p class="label">Off the scoreboard</p><h2 id="sq-title">Side quests</h2></div>
+        <p>Bigger collecting challenges that aren't a single set. DPM doesn't count these in his complete-set record.</p>
+      </div>
+      <div class="quests" id="quests"></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><b>Fan-made and unofficial.</b> Not affiliated with or endorsed by Deep Pocket Monster, Card Party, The Pokémon Company, Nintendo, Creatures or GAME FREAK. Set logos, card images, Diglett and video thumbnails belong to their owners and are shown for fan commentary.</p>
+    <p>Data checked Nov 2, 2026.</p>
+    <div class="links"><a href="privacy.html">Privacy policy</a><a href="#stats">About the data</a></div>
+  </div>
+</footer>
+
+<dialog id="dlg" aria-labelledby="dlgTitle"></dialog>
+
+<script>
+const YT = id => "https://www.youtube.com/watch?v=" + id;
+// r: W = DPM completed the set, L = Steve won. src: "desc" = DPM's stated record, "comments" = fan comments.
+const A = [
+ {d:"2022-09-05",set:"Brilliant Stars",img:"brilliant-stars",era:"modern",clock:"24:00",lim:"24 hours",min:1440,where:"Game shops around San Diego",id:"qKeWD0QnipA",r:"W",src:"desc",
+  note:"The one that started it all. If he failed, the whole collection went to his son.",moment:"6PackDan supplied a big stack of cards (paid off camera).",
+  proof:"He was 6–3 going into #10, and the three losses are named in later videos, so the other six were wins."},
+ {d:"2022-10-02",set:"Base Set",img:"base-set",era:"vintage",clock:"24:00",lim:"24 hours",min:1440,where:"San Diego game shops",id:"tX5uyNSQ9uA",r:"W",src:"desc",
+  note:"PokeRev dared him to finish a binder of 1999 Base Set in a day, \"or else something BAD happens.\"",
+  proof:"One of the six wins in the 6–3 record he stated before #10."},
+ {d:"2022-10-21",set:"Jungle",img:"jungle",era:"vintage",clock:"02:00",lim:"2 hours",min:120,where:"SD Collectibles card show",id:"JpfopVIWn4Y",r:"L",src:"desc",
+  note:"The speedrun: all of 1999 Jungle from scratch. If he lost, he had to eat the One Chip Challenge.",
+  proof:"His 2025 Jungle video calls it a set \"which I've lost before.\""},
+ {d:"2022-11-27",set:"Fossil",img:"fossil",era:"vintage",clock:"01:00",lim:"1 hour",min:60,where:"Not stated",id:"W43vmn9zkRE",r:"W",src:"desc",
+  note:"A vintage set in one hour, from nothing. Still the shortest Steve has ever been set to.",
+  proof:"One of the six wins in the 6–3 record he stated before #10."},
+ {d:"2022-12-20",set:"Base Set 2",img:"base-set-2",era:"vintage",clock:"24:00",lim:"1 day",min:1440,where:"Not stated",id:"edIS1uDlBDw",r:"L",src:"desc",
+  note:"A bigger vintage set. The cards were to be given away at 500k subscribers if he failed.",
+  proof:"His next video says \"I lost the last challenge.\""},
+ {d:"2023-01-22",set:"Evolving Skies",img:"evolving-skies",era:"modern",clock:"48:00",lim:"48 hours",min:2880,where:"Hawaii",hi:true,id:"BeyxBvZaWOc",r:"W",src:"desc",
+  note:"A huge modern set, chased on a trip to Hawaii.",
+  proof:"One of the six wins in the 6–3 record he stated before #10."},
+ {d:"2023-04-15",set:"Scarlet & Violet",img:"scarlet-violet",era:"modern",clock:"48:00",lim:"2 days",min:2880,where:"San Diego shops, including TC's Rockets",id:"StQPYWzMC9Y",r:"W",src:"desc",
+  note:"The first Scarlet & Violet set, attempted just after release.",
+  proof:"One of the six wins in the 6–3 record he stated before #10."},
+ {d:"2023-06-03",set:"Crown Zenith",img:"crown-zenith",era:"modern",clock:"48:00",lim:"48 hours",min:2880,where:"Union Marketplace card show, San Diego",id:"P4pnbNSAKwk",r:"L",src:"desc",
+  note:"He started 70 cards short.",moment:"A Gold Dialga VSTAR showed up early, but the very last card never did.",
+  proof:"His 2025 rematch says he \"failed by 1 regular rare card.\""},
+ {d:"2023-09-02",set:"Team Up",img:"team-up",era:"modern",clock:"??:??",lim:"Not stated in the title",min:null,where:"Community effort, with 30+ creators chipping in",id:"2scUWMlt_u8",r:"W",src:"desc",
+  note:"Billed as the most expensive modern set at the time.",moment:"A long list of creators helped fill the gaps.",
+  proof:"One of the six wins in the 6–3 record he stated before #10."},
+ {d:"2023-11-18",set:"Pokémon 151",img:"151",era:"modern",clock:"02:31",lim:"151 minutes",min:151,where:"Not stated",id:"fJ0mt9derKc",r:"L",src:"desc",
+  note:"151 cards in 151 minutes. That's the 02:31 on Steve's face, and on the Steve plushie.",
+  proof:"His second 151 video opens with the record at 6–4."},
+ {d:"2024-01-13",set:"Pokémon 151",img:"151",era:"modern",clock:"02:31",lim:"151 minutes",min:151,where:"NinjaXChange",id:"KGloKw4SAyI",r:"L",src:"desc",
+  note:"Second try at 151.",moment:"The first binder was given away live on the channel.",
+  proof:"His third 151 video opens with the record at 6–5."},
+ {d:"2024-02-03",set:"Pokémon 151",img:"151",era:"modern",clock:"02:31",lim:"151 minutes",min:151,where:"Hawaii Pop Con",hi:true,id:"riEB2yKmlyg",r:"W",src:"desc",
+  note:"Billed as the third and final try: \"or Lose It All FOREVER.\"",
+  proof:"His next video states the record at 7–5."},
+ {d:"2024-09-02",set:"Paldean Fates",img:"paldean-fates",era:"modern",clock:"04:05",lim:"245 minutes",min:245,where:"Collect-A-Con LA",id:"vKPGllTcnDU",r:"L",src:"desc",
+  note:"One minute per card for a 245-card set.",
+  proof:"His next video states the record at 7–6."},
+ {d:"2025-01-18",set:"Team Rocket",img:"team-rocket",era:"vintage",clock:"01:23",lim:"83 minutes",min:83,where:"Frank and Son Collectibles",id:"USkj3Kz09vc",r:"L",src:"desc",
+  note:"Team Rocket Unlimited, 83 cards in 83 minutes.",moment:"The start of the curse.",
+  proof:"His next video calls it \"a gut-wrenching loss,\" with the record at 7–7."},
+ {d:"2025-02-17",set:"Team Rocket",img:"team-rocket",era:"vintage",clock:"01:23",lim:"83 minutes",min:83,where:"Hawaii Pop Con",hi:true,id:"UPmMum19mbM",r:"L",src:"desc",
+  note:"A loss here would give him his first-ever losing record against Steve.",
+  proof:"His next video states the record at 7–8."},
+ {d:"2025-03-29",set:"Surging Sparks",img:"surging-sparks",era:"modern",clock:"24:00",lim:"Under 1 day",min:1440,where:"Hawaii Pop Con",hi:true,id:"epxk-CWTVzU",r:"W",src:"desc",
+  note:"The biggest set he'd tried at that point, with lucky red envelopes from The Trainer Court thrown in.",
+  proof:"His next video states the record at 8–8."},
+ {d:"2025-06-02",set:"Team Rocket",img:"team-rocket",era:"vintage",clock:"01:23",lim:"83 minutes",min:83,where:"Ninja Exchange",id:"EpDutFABSXs",r:"L",src:"desc",
+  note:"\"Once more,\" with the record tied at 8–8.",
+  proof:"His next video states the record at 8–9."},
+ {d:"2025-06-26",set:"Crown Zenith",img:"crown-zenith",era:"modern",clock:"48:00",lim:"48 hours",min:2880,where:"All over Tampa, before Card Party East",id:"nlPmAhi94T8",r:"W",src:"desc",
+  note:"A rematch with the set from 2023.",moment:"Revenge for the 2023 loss by a single regular rare.",
+  proof:"His next video states the record at 9–9."},
+ {d:"2025-08-11",set:"Jungle",img:"jungle",era:"vintage",clock:"24:00",lim:"1 day",min:1440,where:"A city he'd never collected in",id:"ThODu2o-IlA",r:"W",src:"desc",
+  note:"A rematch with the set from his 2022 speedrun, this time with a full day on Steve.",
+  proof:"His next video states the record at 10–9."},
+ {d:"2025-09-17",set:"Base Set 2",img:"base-set-2",era:"vintage",clock:"48:00",lim:"48 hours",min:2880,where:"With help from 026Gonzo and IanwithIan",id:"Y2pZtOgehPI",r:"W",src:"desc",
+  note:"Another rematch. A loss would have pushed his losses into double digits.",
+  proof:"His next video states the record at 11–9, the last record he stated himself."},
+ {d:"2025-10-02",set:"Paldean Fates",img:"paldean-fates",era:"modern",clock:"48:00",lim:"48 hours",min:2880,where:"Shops, fans and creators",id:"i96vUieiQYU",r:"W",src:"comments",
+  note:"A rematch of the 245-minute loss, this time with 48 hours. He went in at 11–9.",
+  proof:"Commenters congratulate him on completing the set, and a fan tally on a later video counts this as a win."},
+ {d:"2026-03-19",set:"Team Rocket",img:"team-rocket",era:"vintage",clock:"01:23",lim:"83 minutes",min:83,where:"Frank & Son Collectible Show",id:"cwnb6SLf-_U",r:"W",src:"comments",
+  note:"Try number four. \"I could have sworn I was cursed.\"",
+  proof:"Hundreds of comments celebrate the curse being broken. One fan's tally puts him at 13–9, on a 5-win streak."},
+ {d:"2026-04-22",set:"Mega Evolution",img:"mega-evolution",era:"modern",clock:"03:08",lim:"188 minutes",min:188,where:"Not stated",id:"9YK3RqzAUbM",r:"L",src:"comments",
+  note:"188 cards in 188 minutes.",moment:"A gold card got away.",
+  proof:"A top fan comment puts him at 13–10 after this one, and others call it \"a sad loss.\""},
+ {d:"2026-05-20",set:"Phantasmal Flames",img:"phantasmal-flames",era:"modern",clock:"02:10",lim:"130 minutes",min:130,where:"Not stated",id:"yBrStlKyuyA",r:"W",src:"comments",
+  note:"130 cards in 130 minutes.",moment:"Down to one card with two minutes left, and a gold Charizard made up for the gold card that cost him last time.",
+  proof:"Commenters describe the final-minutes finish and celebrate the win."},
+ {d:"2026-07-17",set:"Evolving Skies",img:"evolving-skies",era:"modern",clock:"48:00",lim:"48 hours",min:2880,where:"Hawaii Pop Con",hi:true,id:"bFFaMo56sKY",r:"W",src:"comments",
+  note:"Back to the set from his 2023 Hawaii trip, now a far pricier chase.",moment:"The ending is one fans call his most emotional.",
+  proof:"Commenters call it \"the biggest win so far\" and note he's \"2-0 against Evolving Skies.\""},
+ {d:"2026-09-22",set:"Ascended Heroes",img:"ascended-heroes",era:"modern",clock:"48:00",lim:"48 hours",min:2880,where:"New York City",id:"Ky4o9jZpDW4",r:"L",src:"comments",
+  note:"295 cards, the biggest English set ever printed.",moment:"His luggage got lost and \"nothing is going as planned.\"",
+  proof:"Commenters say he was \"still missing a few cards in the end\" and wish him better luck next time."},
+ {d:"2026-10-22",set:"Perfect Order",img:"perfect-order",era:"modern",clock:"02:04",lim:"124 minutes",min:124,where:"Frank and Son Collectibles",id:"GxUqDxMHjxA",r:"W",src:"comments",
+  note:"124 cards in 124 minutes, with a catch: the binder had to be filled in order.",
+  proof:"Commenters congratulate him on completing the set."}
+];
+A.forEach((a,i)=>a.n=i+1);
+
+const QUESTS=[
+ {d:"2023-10-28",t:"Japan Challenge Binder",art:"jp",p:"His first trip to Japan: 12 tasks in a custom binder, including buying a card while speaking only Japanese.",r:"W",out:"BINDER FINISHED",l:[["Watch","ohKHvwqPw2o"]]},
+ {d:"2024-03-23",t:"The Gigabinder",art:"card-pikachu",p:"One card for every Pokémon that exists, all 1,025, in one oversized binder. A full saga cut adds a new ending.",r:"W",out:"ALL 1,025 FOUND",l:[["Part 1","6uXaVLcBo5I"],["Gen 3","rCysg1fk8iE"],["Full saga","gv-r3pfVmvI"]]},
+ {d:"2024-10-28",t:"Every Gengar Ever",art:"card-gengar",p:"Every English Gengar card before Halloween.",moment:"He later said it came down to the very last day.",r:"W",out:"COMPLETED",l:[["Part 1","JObxd5s-uqQ"],["Finale","ikGro1X2GSM"]]},
+ {d:"2025-12-05",t:"Every Japanese Gengar",art:"card-gengar",jp:true,p:"A VaultX dare: every Japanese Gengar by Halloween, with far more variants and exclusives.",moment:"One card proved nearly impossible to find.",r:"L",out:"STEVE WINS",l:[["Part 1","kgpK9726U64"],["Finale","53PJjviWEV0"]]},
+ {d:"2026-02-10",t:"Every Umbreon Ever",art:"card-umbreon",p:"Every English Umbreon card, with a twist he didn't see coming.",moment:"He finished the collection and gave it back, complete, to the fan he'd bought the start of it from.",r:"W",out:"COMPLETED",l:[["Watch","Pou6hHZKi3s"]]}
+];
+
+
+/* ---------- Steve ---------- */
+// happy Steve: brows up, eyes squeezed into smiles
+const BROWS={angry:[[16,0],[-16,0]],sad:[[-16,4],[16,4]],smug:[[4,0],[-22,-8]],shocked:[[-4,-12],[4,-12]],happy:[[-10,-10],[10,-10]]};
+function steveSVG(mood,digits,{blink=false}={}){
+  const [[la,ly],[ra,ry]]=BROWS[mood]||BROWS.angry;
+  const [h,m]=digits.split(":");
+  const eyes=mood==="happy"
+    ?`<circle class="eye" cx="68" cy="50" r="27"/><circle class="eye" cx="132" cy="50" r="27"/><path class="smile" d="M54 56 Q68 40 82 56"/><path class="smile" d="M118 56 Q132 40 146 56"/>`
+    :`<circle class="eye" cx="68" cy="50" r="27"/><circle class="eye" cx="132" cy="50" r="27"/>
+      <g class="pupils"><circle class="pupil" cx="70" cy="54" r="13"/><circle class="pupil" cx="134" cy="54" r="13"/>
+      <circle class="glint" cx="74" cy="49" r="4"/><circle class="glint" cx="138" cy="49" r="4"/></g>
+      <rect class="lids" x="41" y="23" width="54" height="54" rx="27"/><rect class="lids" x="105" y="23" width="54" height="54" rx="27"/>`;
+  return `<svg class="steve${blink?" blink":""}" viewBox="0 0 200 150" role="img" aria-label="Steve the clock, looking ${mood}">
+    <g class="eyes">${eyes}</g>
+    <rect class="brow bl" x="40" y="10" width="56" height="12" rx="3" style="transform:translateY(${ly}px) rotate(${la}deg);transform-origin:68px 16px"/>
+    <rect class="brow br" x="104" y="10" width="56" height="12" rx="3" style="transform:translateY(${ry}px) rotate(${ra}deg);transform-origin:132px 16px"/>
+    <rect class="body" x="8" y="74" width="184" height="72" rx="14"/>
+    <text class="dig" x="100" y="128" text-anchor="middle"><tspan class="hh">${h}</tspan><tspan class="colon">:</tspan><tspan class="mm">${m}</tspan></text>
+  </svg>`;
+}
+// happy Diglett popping out of its hole, for DPM wins
+function diglettSVG(){
+  return `<svg class="diglett" viewBox="0 0 120 120" role="img" aria-label="Happy Diglett">
+    <ellipse cx="60" cy="104" rx="54" ry="14" fill="#5B3A22"/>
+    <path d="M24 106 V58 a36 40 0 0 1 72 0 V106 Z" fill="#B0703C" stroke="#3B2414" stroke-width="4"/>
+    <path d="M38 54 q6 -8 12 0" fill="none" stroke="#141416" stroke-width="5" stroke-linecap="round"/>
+    <path d="M70 54 q6 -8 12 0" fill="none" stroke="#141416" stroke-width="5" stroke-linecap="round"/>
+    <ellipse cx="60" cy="72" rx="15" ry="10" fill="#F2A1B4" stroke="#3B2414" stroke-width="3"/>
+    <ellipse cx="55" cy="69" rx="4" ry="2.5" fill="#fff" opacity=".7"/>
+    <circle cx="34" cy="70" r="5" fill="#F2A1B4" opacity=".55"/><circle cx="86" cy="70" r="5" fill="#F2A1B4" opacity=".55"/>
+    <path d="M10 104 q8 -12 18 -6 q6 -10 16 -2" fill="#7A5232"/><path d="M110 104 q-8 -12 -18 -6 q-6 -10 -16 -2" fill="#7A5232"/>
+    <circle cx="20" cy="110" r="4" fill="#8E8E98"/><circle cx="98" cy="111" r="5" fill="#8E8E98"/>
+  </svg>`;
+}
+function mountFaces(root=document){
+  root.querySelectorAll("[data-steve]").forEach(el=>{el.innerHTML=steveSVG(el.dataset.steve,el.dataset.digits||"00:00",{blink:!!el.dataset.blink})});
+  root.querySelectorAll("[data-dig]").forEach(el=>{el.innerHTML=diglettSVG()});
+}
+function setMood(svg,mood){const [[la,ly],[ra,ry]]=BROWS[mood];svg.querySelector(".bl").style.transform=`translateY(${ly}px) rotate(${la}deg)`;svg.querySelector(".br").style.transform=`translateY(${ry}px) rotate(${ra}deg)`}
+
+const store={get(k,f){try{const v=localStorage.getItem(k);return v==null?f:JSON.parse(v)}catch(e){return f}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmtDate=s=>new Date(s+"T12:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
+const yr=a=>a.d.slice(0,4);
+const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const W_=A.filter(a=>a.r==="W").length, L_=A.length-W_;
+const rec=list=>`${list.filter(a=>a.r==="W").length}–${list.filter(a=>a.r==="L").length}`;
+const isCursed=a=>a.set==="Team Rocket";
+const LATEST=A.at(-1);
+let sf=store.get("pvs-spoiler-free",false);
+const logoOf=a=>a.img;
+
+const resChip=r=>sf?"":r==="W"?`<span class="res W">${diglettSVG()}DPM WINS</span>`:`<span class="res L">${steveSVG("happy","00:00")}STEVE WINS</span>`;
+function tile(a,{showRes=true}={}){
+  return `<span class="tile"><span class="no">#${a.n} · ${yr(a)}</span><img class="logo" src="logos/${logoOf(a)}.webp" alt="${esc(a.set)} logo" loading="lazy"><span class="clock">${a.clock}</span>${showRes?resChip(a.r):""}</span>`;
+}
+function verdict(a){
+  const face=a.r==="W"?diglettSVG():steveSVG("happy","00:00");
+  return `<div class="verdict ${a.r}">${face}<div><b>${a.r==="W"?"DPM wins":"Steve wins"}</b>${a.moment?`<span class="moment">What happened: ${esc(a.moment)}</span>`:""}</div></div>`;
+}
+
+/* ---------- top row: latest video (result covered until you say you've seen it) ---------- */
+function renderLatest(){
+  const a=LATEST, seen=!sf&&store.get("pvs-seen",0)===a.n;
+  const box=document.getElementById("latestBox");
+  box.innerHTML=`
+    <a class="thumb" href="${YT(a.id)}" target="_blank" rel="noopener" aria-label="Watch ${esc(a.set)} on YouTube"><img src="thumbs/${a.id}.jpg" alt=""><span class="tag">Latest · ${fmtDate(a.d)}</span><span class="play" aria-hidden="true"><span></span></span></a>
+    <div class="latest-info"><img class="logo" src="logos/${logoOf(a)}.webp" alt=""><div><p class="label">Challenge #${a.n}</p><h1>${esc(a.set)}</h1></div></div>
+    <div class="meta"><span><b>Steve's clock:</b> ${a.lim}</span><span><b>Where:</b> ${esc(a.where)}</span></div>
+    <p class="story">${esc(a.note)}</p>
+    <div id="latestResult">${seen?verdict(a):`<button class="reveal" type="button" id="seenBtn">I've seen it. Show who won.</button>`}</div>`;
+  const b=document.getElementById("seenBtn");
+  if(b)b.addEventListener("click",()=>{store.set("pvs-seen",a.n);document.getElementById("latestResult").innerHTML=verdict(a)});
+}
+
+/* ---------- scoreboard + stats ---------- */
+function bestRun(r){let best=[],cur=[];A.forEach(a=>{cur=a.r===r?[...cur,a]:[];if(cur.length>best.length)best=cur});return best}
+function renderScore(){
+  document.getElementById("dpmN").textContent=sf?"–":W_;
+  document.getElementById("steveN").textContent=sf?"–":L_;
+  document.getElementById("scoreFoot").innerHTML=`<div><b class="num">${Math.round(W_/A.length*100)}%</b><span>DPM win rate</span></div><div><b class="num">${A.length}</b><span>challenges so far</span></div>`;
+}
+function renderStats(){
+  const pr=bestRun("W"),sr=bestRun("L");
+  const fastWin=A.filter(a=>a.r==="W"&&a.min).sort((x,y)=>x.min-y.min)[0];
+  const big=A.find(a=>a.set==="Ascended Heroes");
+  const card=(k,v,s,cls="",a=null)=>a
+    ?`<a class="bs" href="${YT(a.id)}" target="_blank" rel="noopener"><span class="k">${k}</span><span class="v num ${cls}">${v}</span><span class="s">${s}</span><span class="go">Watch ↗</span></a>`
+    :`<div class="bs"><span class="k">${k}</span><span class="v num ${cls}">${v}</span><span class="s">${s}</span></div>`;
+  document.getElementById("stats-grid").innerHTML=[
+    card("DPM's best run",`${pr.length}<small>in a row</small>`,`${pr[0].set} (${yr(pr[0])}) through ${pr.at(-1).set} (${yr(pr.at(-1))})`,"y"),
+    card("Steve's best run",`${sr.length}<small>in a row</small>`,`${sr[0].set} (${yr(sr[0])}) through ${sr.at(-1).set} (${yr(sr.at(-1))})`,"r"),
+    card("Vintage · modern",`${rec(A.filter(a=>a.era==="vintage"))}<small>·</small> ${rec(A.filter(a=>a.era==="modern"))}`,"1999–2000 sets · newer sets"),
+    card("Fastest win",fastWin.lim,`${fastWin.set}, a vintage set from scratch, ${yr(fastWin)}`,"y",fastWin)
+  ].join("");
+}
+function renderChart(){
+  const W=720,H=250,L=40,R=46,T=20,B=34;
+  const ys=[];let c=0;A.forEach(a=>{c+=a.r==="W"?1:-1;ys.push(c)});
+  const min=-2,max=6;
+  const x=n=>L+(n-1)*(W-L-R)/(A.length-1);
+  const y=v=>T+(max-v)*(H-T-B)/(max-min);
+  let g="";
+  for(let v=min;v<=max;v+=2)g+=`<line class="${v===0?"z":"g"}" x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${L-10}" y="${y(v)+4}" text-anchor="end">${v>0?"+"+v:v}</text>`;
+  [1,9,18,27].forEach(n=>g+=`<text class="ax" x="${x(n)}" y="${H-10}" text-anchor="middle">#${n} · ${A[n-1].d.slice(0,4)}</text>`);
+  const pts=ys.map((v,i)=>[x(i+1),y(v)]);
+  const line="M"+pts.map(p=>p.join(",")).join(" L");
+  const area=`M${x(1)},${y(0)} L`+pts.map(p=>p.join(",")).join(" L")+` L${x(A.length)},${y(0)} Z`;
+  const dots=A.map((a,i)=>`<a href="#a${a.n}" data-open="${a.n}"><circle class="d${a.r}" cx="${pts[i][0]}" cy="${pts[i][1]}" r="6"><title>#${a.n} ${a.set}: ${a.r==="W"?"DPM":"Steve"} wins (${ys[i]>0?"+":""}${ys[i]})</title></circle></a>`).join("");
+  const end=ys.at(-1);
+  document.getElementById("chart").innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="DPM's lead over Steve across ${A.length} attempts, ending at plus ${end}">${g}<path class="ar" d="${area}"/><path class="ln" d="${line}"/>${dots}<text class="lab" x="${x(A.length)+10}" y="${y(end)+4}">+${end}</text></svg>`;
+}
+
+/* ---------- previous challenges ---------- */
+let filter="all",sort="new";
+function renderGrid(){
+  const by={new:(a,b)=>b.n-a.n,old:(a,b)=>a.n-b.n,fast:(a,b)=>(a.min??1e9)-(b.min??1e9)}[sort];
+  const list=A.filter(a=>a!==LATEST&&(filter==="all"||a.r===filter||a.era===filter)).sort(by);
+  const host=document.getElementById("grid");
+  if(!list.length){host.innerHTML=`<div class="empty">No challenges match this filter.</div>`;return}
+  host.innerHTML=list.map(a=>`<button type="button" class="item" data-open="${a.n}" aria-label="#${a.n} ${esc(a.set)}, ${a.lim}. Open details">
+    ${tile(a)}<span class="meta"><b>${esc(a.set)}</b><span>${fmtDate(a.d)} · ${a.lim}</span></span></button>`).join("");
+}
+function renderRematches(){
+  const by={};A.forEach(a=>(by[a.set]=by[a.set]||[]).push(a));
+  const rows=Object.entries(by).filter(([,v])=>v.length>1).sort((a,b)=>b[1].length-a[1].length||a[1][0].n-b[1][0].n);
+  document.getElementById("rmList").innerHTML=rows.map(([s,v])=>{
+    const last=v.at(-1);
+    const st=last.r==="W"?(v.some(a=>a.r==="L")?"DPM got revenge":`DPM ${v.length} for ${v.length}`):"Steve still leads";
+    return `<div class="rm"><div><h4>${esc(s)}</h4><span class="label">${v.length} tries</span></div>
+      <div class="tries">${v.map(a=>`<button type="button" class="try ${sf?"H":a.r}" data-open="${a.n}"><span>${yr(a)}</span>${sf?"":`<b>${a.r==="W"?"DPM":"STEVE"}</b>`}</button>`).join("")}</div>
+      ${sf?"":`<span class="st ${last.r}">${st}</span>`}</div>`;
+  }).join("");
+}
+function renderQuests(){
+  document.getElementById("quests").innerHTML=QUESTS.map(q=>`<article class="quest">
+    ${q.art==="jp"?`<div class="art jp" aria-hidden="true"><span>12</span></div>`:`<div class="art"><img src="cards/${q.art}.jpg" alt="" loading="lazy"></div>`}
+    <div><span class="date">${fmtDate(q.d)}${q.jp?" · Japanese cards":""}</span><h3>${esc(q.t)}</h3><p>${esc(q.p)}</p>${q.moment&&!sf?`<span class="moment">${esc(q.moment)}</span>`:""}
+      <div class="out">${sf?resChip(q.r):q.r==="W"?`<span class="res W">${diglettSVG()}${q.out}</span>`:resChip("L")}</div>
+      <div class="links">${q.l.map(([t,v])=>`<a href="${YT(v)}" target="_blank" rel="noopener">${t} ↗</a>`).join("")}</div></div>
+  </article>`).join("");
+}
+
+/* ---------- detail dialog, with the Team Rocket curse treatment ---------- */
+const dlg=document.getElementById("dlg");
+let current=null;
+function openAttempt(n){
+  const a=A[n-1];if(!a)return;current=n;
+  const hidden=document.body.classList.contains("sf")||(a===LATEST&&store.get("pvs-seen",0)!==a.n);
+  const tries=A.filter(b=>b.set===a.set),tryIdx=tries.indexOf(a)+1;
+  const curse=isCursed(a)?(a.r==="L"?"cursed":"broken"):"";
+  const curseText=(a.r==="L"?"☠ The curse":"★ Curse broken")+` · try ${tryIdx} of ${tries.length}`;
+  dlg.className=hidden?"":curse;
+  dlg.dataset.curse=curse;
+  dlg.innerHTML=`<button class="close" type="button" aria-label="Close" data-close>✕</button>
+  <div class="dlg">
+    <div class="art">${tile(a,{showRes:false})}</div>
+    <div>
+      <p class="label">#${a.n} · ${fmtDate(a.d)}${tries.length>1&&!curse?` · try ${tryIdx} of ${tries.length}`:""}</p>
+      <h3 id="dlgTitle">${esc(a.set)}</h3>
+      ${curse?`<span class="curse-tag">${hidden?`Team Rocket · try ${tryIdx} of ${tries.length}`:curseText}</span>`:""}
+      <dl>
+        <dt>Steve's clock</dt><dd>${a.lim}</dd>
+        <dt>Where</dt><dd>${esc(a.where)}</dd>
+        <dt>Era</dt><dd>${a.era==="vintage"?"Vintage (1999–2000)":"Modern"}</dd>
+      </dl>
+      <p class="story">${esc(a.note)}</p>
+      ${hidden?`<button class="reveal" type="button" data-reveal>Show who won</button><div hidden data-verdict>${verdict(a)}</div>`:verdict(a)}
+      <div class="dlg-foot">
+        <a class="btn" href="${YT(a.id)}" target="_blank" rel="noopener">Watch on YouTube ↗</a>
+        <div class="dlg-nav"><button class="icon-btn" type="button" data-step="-1" ${n===1?"disabled":""}>← Older</button><button class="icon-btn" type="button" data-step="1" ${n===A.length?"disabled":""}>Newer →</button></div>
+      </div>
+    </div>
+  </div>`;
+  dlg.dataset.curseText=curseText;
+  if(!dlg.open)dlg.showModal();
+}
+dlg.addEventListener("click",e=>{
+  if(e.target===dlg||e.target.closest("[data-close]")){dlg.close();return}
+  const rv=e.target.closest("[data-reveal]");
+  if(rv){rv.remove();dlg.querySelector("[data-verdict]").hidden=false;if(dlg.dataset.curse)dlg.className=dlg.dataset.curse;const t=dlg.querySelector(".curse-tag");if(t)t.textContent=dlg.dataset.curseText;return}
+  const s=e.target.closest("[data-step]");if(s)openAttempt(current+Number(s.dataset.step));
+});
+document.addEventListener("click",e=>{const o=e.target.closest("[data-open]");if(!o)return;e.preventDefault();openAttempt(Number(o.dataset.open))});
+
+/* ---------- header Steve: blinks, counts down, changes mood, eyes follow the cursor ---------- */
+function steveLife(){
+  const svg=document.querySelector("#hdrSteve svg"),pupils=svg.querySelector(".pupils"),hh=svg.querySelector(".hh"),mm=svg.querySelector(".mm");
+  const moods=["angry","smug","angry","shocked","angry","sad"];
+  let secs=151*60,mi=0;
+  if(reduced)return;
+  setInterval(()=>{secs=secs>0?secs-60:151*60;hh.textContent=String(Math.floor(secs/3600)).padStart(2,"0");mm.textContent=String(Math.floor(secs/60)%60).padStart(2,"0")},1000);
+  setInterval(()=>{mi=(mi+1)%moods.length;setMood(svg,moods[mi])},3800);
+  addEventListener("pointermove",e=>{const r=svg.getBoundingClientRect(),dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height*.33),d=Math.hypot(dx,dy)||1,k=Math.min(1,d/200)*7;pupils.setAttribute("transform",`translate(${(dx/d*k).toFixed(1)} ${(dy/d*k).toFixed(1)})`)},{passive:true});
+}
+
+/* ---------- controls ---------- */
+document.getElementById("filters").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;filter=b.dataset.f;document.querySelectorAll("#filters button").forEach(x=>x.setAttribute("aria-pressed",x===b));renderGrid()});
+document.getElementById("sort").addEventListener("change",e=>{sort=e.target.value;renderGrid()});
+// one switch hides every result on the page; the latest video stays covered either way
+const sfBtn=document.getElementById("sfBtn");
+function applySF(){document.body.classList.toggle("sf",sf);sfBtn.setAttribute("aria-pressed",sf);renderLatest();renderScore();renderGrid();renderRematches();renderQuests();if(sf&&(filter==="W"||filter==="L")){filter="all";document.querySelectorAll("#filters button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.f==="all"));renderGrid()}}
+function setSF(v){sf=v;store.set("pvs-spoiler-free",sf);applySF()}
+sfBtn.addEventListener("click",()=>setSF(!sf));
+document.addEventListener("click",e=>{if(e.target.closest("[data-sf-off]"))setSF(false)});
+const themes=["auto","light","dark"];let ti=Math.max(0,themes.indexOf(store.get("pvs-theme","auto")));
+const tb=document.getElementById("themeBtn");
+function applyTheme(){const t=themes[ti];if(t==="auto")document.documentElement.removeAttribute("data-theme");else document.documentElement.setAttribute("data-theme",t);tb.textContent=t[0].toUpperCase()+t.slice(1)}
+tb.addEventListener("click",()=>{ti=(ti+1)%3;store.set("pvs-theme",themes[ti]);applyTheme()});
+
+applyTheme();
+mountFaces();renderLatest();renderScore();renderStats();renderChart();renderGrid();renderRematches();renderQuests();applySF();steveLife();
+const m=/^#a(\d+)$/.exec(location.hash);if(m)openAttempt(Number(m[1]));
+</script>
+</body>
+</html>
