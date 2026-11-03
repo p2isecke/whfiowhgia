@@ -113,7 +113,7 @@ section{padding-block:64px}
 .latest .meta{display:flex;gap:6px 16px;flex-wrap:wrap;font-size:15px;color:var(--ink-2)}
 .latest .meta b{color:var(--ink)}
 .latest .story{margin:0;color:var(--ink-2);max-width:62ch}
-.reveal{width:100%;padding:13px;border-radius:14px;border:2px dashed var(--line);background:transparent;font-weight:700;cursor:pointer}
+.reveal{display:inline-flex;align-items:center;padding:8px 14px;border-radius:99px;border:2px dashed var(--line);background:transparent;font-size:14px;font-weight:700;cursor:pointer}
 
 .score{background:#141416;color:#F4F4F1;border-radius:20px;border:3px solid #E2232B;padding:24px;display:flex;flex-direction:column;gap:14px}
 .score .label{color:#A1A1A9}
@@ -216,30 +216,30 @@ details.about p{margin:0 0 8px}
 .quest .links a:hover{text-decoration:underline}
 
 /* ---------- verdict + dialog ---------- */
-.verdict{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:16px}
+.result{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px}
+.verdict{display:inline-flex;align-items:center;gap:8px;padding:4px 14px 4px 6px;border-radius:99px}
 .verdict.W{background:var(--dpm-soft)} .verdict.L{background:var(--steve-soft)}
-.verdict svg{width:80px;flex:none}
-.verdict b{font-family:var(--display);font-weight:900;font-size:22px;display:block;line-height:1.05}
+.verdict svg{width:36px;flex:none}
+.verdict b{font-family:var(--display);font-weight:800;font-size:16px;line-height:1}
 .verdict.W b{color:var(--dpm-ink)} .verdict.L b{color:var(--rim-ink)}
-.verdict .proof{font-size:13px;color:var(--ink-2)}
-dialog{border:0;padding:0;border-radius:24px;background:var(--surface);color:var(--ink);width:min(780px,calc(100vw - 32px));max-height:calc(100dvh - 40px);box-shadow:0 30px 80px rgba(0,0,0,.45)}
+dialog{border:0;padding:0;border-radius:24px;background:var(--surface);color:var(--ink);width:min(640px,calc(100vw - 32px));max-height:calc(100dvh - 40px);box-shadow:0 30px 80px rgba(0,0,0,.45)}
 dialog::backdrop{background:rgba(10,10,12,.6);backdrop-filter:blur(3px)}
-.dlg{display:grid;grid-template-columns:260px 1fr;gap:28px;padding:28px}
+.dlg{display:grid;grid-template-columns:190px 1fr;gap:22px;padding:24px}
 .dlg .art{position:relative;align-self:start}
-.dlg h3{font-size:42px;margin-top:6px}
+.dlg h3{font-size:34px;margin-top:6px;padding-right:36px}
 .dlg dl{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:16px 0 0;font-size:15px}
 .dlg dt{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding-top:3px}
 .dlg dd{margin:0;min-width:0}
-.dlg .story{font-size:16px;color:var(--ink-2);margin:16px 0 18px}
+.dlg .story{font-size:15px;color:var(--ink-2);margin:14px 0 0}
 .dlg-foot{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:20px}
 .dlg-foot .btn{padding:11px 16px;font-size:14px}
 .dlg-nav{margin-left:auto;display:flex;gap:6px}
 .close{position:absolute;top:12px;right:12px;width:38px;height:38px;border-radius:50%;border:1.5px solid var(--line);background:var(--surface);cursor:pointer;font-size:18px;line-height:1;z-index:2}
-@media (max-width:640px){.dlg{grid-template-columns:1fr;padding:22px}.dlg h3{font-size:34px}}
+@media (max-width:640px){.dlg{grid-template-columns:1fr;padding:20px}.dlg .art{max-width:220px}.dlg h3{font-size:30px}}
 
 /* the Team Rocket curse, shown in the dialog */
 .curse-tag{display:none}
-.cursed .curse-tag,.broken .curse-tag{display:inline-flex;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;border-radius:99px;margin-top:10px}
+.cursed .curse-tag,.broken .curse-tag{display:inline-flex;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;border-radius:99px}
 .cursed .curse-tag{background:#2A1240;color:#D9B8FF}
 .broken .curse-tag{background:#FFCB05;color:#141416}
 .cursed{background:radial-gradient(circle at 20% 30%,rgba(122,46,196,.35),transparent 55%),var(--surface)}
@@ -264,8 +264,6 @@ dialog::backdrop{background:rgba(10,10,12,.6);backdrop-filter:blur(3px)}
 .sf-note{align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:14px;border-radius:12px;padding:10px 14px;background:#1C1C20;color:#F4F4F1}
 .sf-note button{border:0;border-radius:99px;padding:6px 12px;font-weight:700;font-size:13px;background:#FFCB05;color:#141416;cursor:pointer}
 .sf .chips [data-f="W"],.sf .chips [data-f="L"]{display:none}
-.moment{display:block;margin-top:6px;font-size:14px;color:var(--ink-2)}
-.verdict .moment{font-size:15px;color:var(--ink);margin:4px 0 2px}
 
 footer{border-top:1px solid var(--line);padding-block:36px 56px;font-size:14px;color:var(--muted)}
 footer p{margin:0 0 10px;max-width:84ch}
@@ -379,95 +377,68 @@ const YT = id => "https://www.youtube.com/watch?v=" + id;
 // r: W = DPM completed the set, L = Steve won. src: "desc" = DPM's stated record, "comments" = fan comments.
 const A = [
  {d:"2022-09-05",set:"Brilliant Stars",img:"brilliant-stars",era:"modern",clock:"24:00",lim:"24 hours",min:1440,where:"Game shops around San Diego",id:"qKeWD0QnipA",r:"W",src:"desc",
-  note:"The one that started it all. If he failed, the whole collection went to his son.",moment:"6PackDan supplied a big stack of cards (paid off camera).",
-  proof:"He was 6–3 going into #10, and the three losses are named in later videos, so the other six were wins."},
+  note:"The one that started it all. If he failed, the whole collection went to his son."},
  {d:"2022-10-02",set:"Base Set",img:"base-set",era:"vintage",clock:"24:00",lim:"24 hours",min:1440,where:"San Diego game shops",id:"tX5uyNSQ9uA",r:"W",src:"desc",
-  note:"PokeRev dared him to finish a binder of 1999 Base Set in a day, \"or else something BAD happens.\"",
-  proof:"One of the six wins in the 6–3 record he stated before #10."},
+  note:"PokeRev dared him to finish a binder of 1999 Base Set in a day, \"or else something BAD happens.\""},
  {d:"2022-10-21",set:"Jungle",img:"jungle",era:"vintage",clock:"02:00",lim:"2 hours",min:120,where:"SD Collectibles card show",id:"JpfopVIWn4Y",r:"L",src:"desc",
-  note:"The speedrun: all of 1999 Jungle from scratch. If he lost, he had to eat the One Chip Challenge.",
-  proof:"His 2025 Jungle video calls it a set \"which I've lost before.\""},
+  note:"The speedrun: all of 1999 Jungle from scratch. If he lost, he had to eat the One Chip Challenge."},
  {d:"2022-11-27",set:"Fossil",img:"fossil",era:"vintage",clock:"01:00",lim:"1 hour",min:60,where:"Not stated",id:"W43vmn9zkRE",r:"W",src:"desc",
-  note:"A vintage set in one hour, from nothing. Still the shortest Steve has ever been set to.",
-  proof:"One of the six wins in the 6–3 record he stated before #10."},
+  note:"A vintage set in one hour, from nothing. Still the shortest Steve has ever been set to."},
  {d:"2022-12-20",set:"Base Set 2",img:"base-set-2",era:"vintage",clock:"24:00",lim:"1 day",min:1440,where:"Not stated",id:"edIS1uDlBDw",r:"L",src:"desc",
-  note:"A bigger vintage set. The cards were to be given away at 500k subscribers if he failed.",
-  proof:"His next video says \"I lost the last challenge.\""},
+  note:"A bigger vintage set. The cards were to be given away at 500k subscribers if he failed."},
  {d:"2023-01-22",set:"Evolving Skies",img:"evolving-skies",era:"modern",clock:"48:00",lim:"48 hours",min:2880,where:"Hawaii",hi:true,id:"BeyxBvZaWOc",r:"W",src:"desc",
-  note:"A huge modern set, chased on a trip to Hawaii.",
-  proof:"One of the six wins in the 6–3 record he stated before #10."},
+  note:"A huge modern set, chased on a trip to Hawaii."},
  {d:"2023-04-15",set:"Scarlet & Violet",img:"scarlet-violet",era:"modern",clock:"48:00",lim:"2 days",min:2880,where:"San Diego shops, including TC's Rockets",id:"StQPYWzMC9Y",r:"W",src:"desc",
-  note:"The first Scarlet & Violet set, attempted just after release.",
-  proof:"One of the six wins in the 6–3 record he stated before #10."},
+  note:"The first Scarlet & Violet set, attempted just after release."},
  {d:"2023-06-03",set:"Crown Zenith",img:"crown-zenith",era:"modern",clock:"48:00",lim:"48 hours",min:2880,where:"Union Marketplace card show, San Diego",id:"P4pnbNSAKwk",r:"L",src:"desc",
-  note:"He started 70 cards short.",moment:"A Gold Dialga VSTAR showed up early, but the very last card never did.",
-  proof:"His 2025 rematch says he \"failed by 1 regular rare card.\""},
+  note:"He started 70 cards short."},
  {d:"2023-09-02",set:"Team Up",img:"team-up",era:"modern",clock:"??:??",lim:"Not stated in the title",min:null,where:"Community effort, with 30+ creators chipping in",id:"2scUWMlt_u8",r:"W",src:"desc",
-  note:"Billed as the most expensive modern set at the time.",moment:"A long list of creators helped fill the gaps.",
-  proof:"One of the six wins in the 6–3 record he stated before #10."},
+  note:"Billed as the most expensive modern set at the time."},
  {d:"2023-11-18",set:"Pokémon 151",img:"151",era:"modern",clock:"02:31",lim:"151 minutes",min:151,where:"Not stated",id:"fJ0mt9derKc",r:"L",src:"desc",
-  note:"151 cards in 151 minutes. That's the 02:31 on Steve's face, and on the Steve plushie.",
-  proof:"His second 151 video opens with the record at 6–4."},
+  note:"151 cards in 151 minutes. That's the 02:31 on Steve's face, and on the Steve plushie."},
  {d:"2024-01-13",set:"Pokémon 151",img:"151",era:"modern",clock:"02:31",lim:"151 minutes",min:151,where:"NinjaXChange",id:"KGloKw4SAyI",r:"L",src:"desc",
-  note:"Second try at 151.",moment:"The first binder was given away live on the channel.",
-  proof:"His third 151 video opens with the record at 6–5."},
+  note:"Second try at 151."},
  {d:"2024-02-03",set:"Pokémon 151",img:"151",era:"modern",clock:"02:31",lim:"151 minutes",min:151,where:"Hawaii Pop Con",hi:true,id:"riEB2yKmlyg",r:"W",src:"desc",
-  note:"Billed as the third and final try: \"or Lose It All FOREVER.\"",
-  proof:"His next video states the record at 7–5."},
+  note:"Billed as the third and final try: \"or Lose It All FOREVER.\""},
  {d:"2024-09-02",set:"Paldean Fates",img:"paldean-fates",era:"modern",clock:"04:05",lim:"245 minutes",min:245,where:"Collect-A-Con LA",id:"vKPGllTcnDU",r:"L",src:"desc",
-  note:"One minute per card for a 245-card set.",
-  proof:"His next video states the record at 7–6."},
+  note:"One minute per card for a 245-card set."},
  {d:"2025-01-18",set:"Team Rocket",img:"team-rocket",era:"vintage",clock:"01:23",lim:"83 minutes",min:83,where:"Frank and Son Collectibles",id:"USkj3Kz09vc",r:"L",src:"desc",
-  note:"Team Rocket Unlimited, 83 cards in 83 minutes.",moment:"The start of the curse.",
-  proof:"His next video calls it \"a gut-wrenching loss,\" with the record at 7–7."},
+  note:"Team Rocket Unlimited, 83 cards in 83 minutes."},
  {d:"2025-02-17",set:"Team Rocket",img:"team-rocket",era:"vintage",clock:"01:23",lim:"83 minutes",min:83,where:"Hawaii Pop Con",hi:true,id:"UPmMum19mbM",r:"L",src:"desc",
-  note:"A loss here would give him his first-ever losing record against Steve.",
-  proof:"His next video states the record at 7–8."},
+  note:"A loss here would give him his first-ever losing record against Steve."},
  {d:"2025-03-29",set:"Surging Sparks",img:"surging-sparks",era:"modern",clock:"24:00",lim:"Under 1 day",min:1440,where:"Hawaii Pop Con",hi:true,id:"epxk-CWTVzU",r:"W",src:"desc",
-  note:"The biggest set he'd tried at that point, with lucky red envelopes from The Trainer Court thrown in.",
-  proof:"His next video states the record at 8–8."},
+  note:"The biggest set he'd tried at that point, with lucky red envelopes from The Trainer Court thrown in."},
  {d:"2025-06-02",set:"Team Rocket",img:"team-rocket",era:"vintage",clock:"01:23",lim:"83 minutes",min:83,where:"Ninja Exchange",id:"EpDutFABSXs",r:"L",src:"desc",
-  note:"\"Once more,\" with the record tied at 8–8.",
-  proof:"His next video states the record at 8–9."},
+  note:"\"Once more,\" with the record tied at 8–8."},
  {d:"2025-06-26",set:"Crown Zenith",img:"crown-zenith",era:"modern",clock:"48:00",lim:"48 hours",min:2880,where:"All over Tampa, before Card Party East",id:"nlPmAhi94T8",r:"W",src:"desc",
-  note:"A rematch with the set from 2023.",moment:"Revenge for the 2023 loss by a single regular rare.",
-  proof:"His next video states the record at 9–9."},
+  note:"A rematch with the set from 2023."},
  {d:"2025-08-11",set:"Jungle",img:"jungle",era:"vintage",clock:"24:00",lim:"1 day",min:1440,where:"A city he'd never collected in",id:"ThODu2o-IlA",r:"W",src:"desc",
-  note:"A rematch with the set from his 2022 speedrun, this time with a full day on Steve.",
-  proof:"His next video states the record at 10–9."},
+  note:"A rematch with the set from his 2022 speedrun, this time with a full day on Steve."},
  {d:"2025-09-17",set:"Base Set 2",img:"base-set-2",era:"vintage",clock:"48:00",lim:"48 hours",min:2880,where:"With help from 026Gonzo and IanwithIan",id:"Y2pZtOgehPI",r:"W",src:"desc",
-  note:"Another rematch. A loss would have pushed his losses into double digits.",
-  proof:"His next video states the record at 11–9, the last record he stated himself."},
+  note:"Another rematch. A loss would have pushed his losses into double digits."},
  {d:"2025-10-02",set:"Paldean Fates",img:"paldean-fates",era:"modern",clock:"48:00",lim:"48 hours",min:2880,where:"Shops, fans and creators",id:"i96vUieiQYU",r:"W",src:"comments",
-  note:"A rematch of the 245-minute loss, this time with 48 hours. He went in at 11–9.",
-  proof:"Commenters congratulate him on completing the set, and a fan tally on a later video counts this as a win."},
+  note:"A rematch of the 245-minute loss, this time with 48 hours. He went in at 11–9."},
  {d:"2026-03-19",set:"Team Rocket",img:"team-rocket",era:"vintage",clock:"01:23",lim:"83 minutes",min:83,where:"Frank & Son Collectible Show",id:"cwnb6SLf-_U",r:"W",src:"comments",
-  note:"Try number four. \"I could have sworn I was cursed.\"",
-  proof:"Hundreds of comments celebrate the curse being broken. One fan's tally puts him at 13–9, on a 5-win streak."},
+  note:"Try number four. \"I could have sworn I was cursed.\""},
  {d:"2026-04-22",set:"Mega Evolution",img:"mega-evolution",era:"modern",clock:"03:08",lim:"188 minutes",min:188,where:"Not stated",id:"9YK3RqzAUbM",r:"L",src:"comments",
-  note:"188 cards in 188 minutes.",moment:"A gold card got away.",
-  proof:"A top fan comment puts him at 13–10 after this one, and others call it \"a sad loss.\""},
+  note:"188 cards in 188 minutes."},
  {d:"2026-05-20",set:"Phantasmal Flames",img:"phantasmal-flames",era:"modern",clock:"02:10",lim:"130 minutes",min:130,where:"Not stated",id:"yBrStlKyuyA",r:"W",src:"comments",
-  note:"130 cards in 130 minutes.",moment:"Down to one card with two minutes left, and a gold Charizard made up for the gold card that cost him last time.",
-  proof:"Commenters describe the final-minutes finish and celebrate the win."},
+  note:"130 cards in 130 minutes."},
  {d:"2026-07-17",set:"Evolving Skies",img:"evolving-skies",era:"modern",clock:"48:00",lim:"48 hours",min:2880,where:"Hawaii Pop Con",hi:true,id:"bFFaMo56sKY",r:"W",src:"comments",
-  note:"Back to the set from his 2023 Hawaii trip, now a far pricier chase.",moment:"The ending is one fans call his most emotional.",
-  proof:"Commenters call it \"the biggest win so far\" and note he's \"2-0 against Evolving Skies.\""},
+  note:"Back to the set from his 2023 Hawaii trip, now a far pricier chase."},
  {d:"2026-09-22",set:"Ascended Heroes",img:"ascended-heroes",era:"modern",clock:"48:00",lim:"48 hours",min:2880,where:"New York City",id:"Ky4o9jZpDW4",r:"L",src:"comments",
-  note:"295 cards, the biggest English set ever printed.",moment:"His luggage got lost and \"nothing is going as planned.\"",
-  proof:"Commenters say he was \"still missing a few cards in the end\" and wish him better luck next time."},
+  note:"295 cards, the biggest English set ever printed."},
  {d:"2026-10-22",set:"Perfect Order",img:"perfect-order",era:"modern",clock:"02:04",lim:"124 minutes",min:124,where:"Frank and Son Collectibles",id:"GxUqDxMHjxA",r:"W",src:"comments",
-  note:"124 cards in 124 minutes, with a catch: the binder had to be filled in order.",
-  proof:"Commenters congratulate him on completing the set."}
+  note:"124 cards in 124 minutes, with a catch: the binder had to be filled in order."}
 ];
 A.forEach((a,i)=>a.n=i+1);
 
 const QUESTS=[
  {d:"2023-10-28",t:"Japan Challenge Binder",art:"jp",p:"His first trip to Japan: 12 tasks in a custom binder, including buying a card while speaking only Japanese.",r:"W",out:"BINDER FINISHED",l:[["Watch","ohKHvwqPw2o"]]},
  {d:"2024-03-23",t:"The Gigabinder",art:"card-pikachu",p:"One card for every Pokémon that exists, all 1,025, in one oversized binder. A full saga cut adds a new ending.",r:"W",out:"ALL 1,025 FOUND",l:[["Part 1","6uXaVLcBo5I"],["Gen 3","rCysg1fk8iE"],["Full saga","gv-r3pfVmvI"]]},
- {d:"2024-10-28",t:"Every Gengar Ever",art:"card-gengar",p:"Every English Gengar card before Halloween.",moment:"He later said it came down to the very last day.",r:"W",out:"COMPLETED",l:[["Part 1","JObxd5s-uqQ"],["Finale","ikGro1X2GSM"]]},
- {d:"2025-12-05",t:"Every Japanese Gengar",art:"card-gengar",jp:true,p:"A VaultX dare: every Japanese Gengar by Halloween, with far more variants and exclusives.",moment:"One card proved nearly impossible to find.",r:"L",out:"STEVE WINS",l:[["Part 1","kgpK9726U64"],["Finale","53PJjviWEV0"]]},
- {d:"2026-02-10",t:"Every Umbreon Ever",art:"card-umbreon",p:"Every English Umbreon card, with a twist he didn't see coming.",moment:"He finished the collection and gave it back, complete, to the fan he'd bought the start of it from.",r:"W",out:"COMPLETED",l:[["Watch","Pou6hHZKi3s"]]}
+ {d:"2024-10-28",t:"Every Gengar Ever",art:"card-gengar",p:"Every English Gengar card before Halloween.",r:"W",out:"COMPLETED",l:[["Part 1","JObxd5s-uqQ"],["Finale","ikGro1X2GSM"]]},
+ {d:"2025-12-05",t:"Every Japanese Gengar",art:"card-gengar",jp:true,p:"A VaultX dare: every Japanese Gengar by Halloween, with far more variants and exclusives.",r:"L",out:"STEVE WINS",l:[["Part 1","kgpK9726U64"],["Finale","53PJjviWEV0"]]},
+ {d:"2026-02-10",t:"Every Umbreon Ever",art:"card-umbreon",p:"Every English Umbreon card, with a twist he didn't see coming.",r:"W",out:"COMPLETED",l:[["Watch","Pou6hHZKi3s"]]}
 ];
 
 
@@ -529,7 +500,7 @@ function tile(a,{showRes=true}={}){
 }
 function verdict(a){
   const face=a.r==="W"?diglettSVG():steveSVG("happy","00:00");
-  return `<div class="verdict ${a.r}">${face}<div><b>${a.r==="W"?"DPM wins":"Steve wins"}</b>${a.moment?`<span class="moment">What happened: ${esc(a.moment)}</span>`:""}</div></div>`;
+  return `<span class="verdict ${a.r}">${face}<b>${a.r==="W"?"DPM wins":"Steve wins"}</b></span>`;
 }
 
 /* ---------- top row: latest video (result covered until you say you've seen it) ---------- */
@@ -608,7 +579,7 @@ function renderRematches(){
 function renderQuests(){
   document.getElementById("quests").innerHTML=QUESTS.map(q=>`<article class="quest">
     ${q.art==="jp"?`<div class="art jp" aria-hidden="true"><span>12</span></div>`:`<div class="art"><img src="cards/${q.art}.jpg" alt="" loading="lazy"></div>`}
-    <div><span class="date">${fmtDate(q.d)}${q.jp?" · Japanese cards":""}</span><h3>${esc(q.t)}</h3><p>${esc(q.p)}</p>${q.moment&&!sf?`<span class="moment">${esc(q.moment)}</span>`:""}
+    <div><span class="date">${fmtDate(q.d)}${q.jp?" · Japanese cards":""}</span><h3>${esc(q.t)}</h3><p>${esc(q.p)}</p>
       <div class="out">${sf?resChip(q.r):q.r==="W"?`<span class="res W">${diglettSVG()}${q.out}</span>`:resChip("L")}</div>
       <div class="links">${q.l.map(([t,v])=>`<a href="${YT(v)}" target="_blank" rel="noopener">${t} ↗</a>`).join("")}</div></div>
   </article>`).join("");
@@ -631,14 +602,13 @@ function openAttempt(n){
     <div>
       <p class="label">#${a.n} · ${fmtDate(a.d)}${tries.length>1&&!curse?` · try ${tryIdx} of ${tries.length}`:""}</p>
       <h3 id="dlgTitle">${esc(a.set)}</h3>
-      ${curse?`<span class="curse-tag">${hidden?`Team Rocket · try ${tryIdx} of ${tries.length}`:curseText}</span>`:""}
+      <div class="result">${hidden?`<button class="reveal" type="button" data-reveal>Show who won</button><span hidden data-verdict>${verdict(a)}</span>`:verdict(a)}${curse?`<span class="curse-tag">${hidden?`Team Rocket · try ${tryIdx} of ${tries.length}`:curseText}</span>`:""}</div>
       <dl>
         <dt>Steve's clock</dt><dd>${a.lim}</dd>
         <dt>Where</dt><dd>${esc(a.where)}</dd>
         <dt>Era</dt><dd>${a.era==="vintage"?"Vintage (1999–2000)":"Modern"}</dd>
       </dl>
       <p class="story">${esc(a.note)}</p>
-      ${hidden?`<button class="reveal" type="button" data-reveal>Show who won</button><div hidden data-verdict>${verdict(a)}</div>`:verdict(a)}
       <div class="dlg-foot">
         <a class="btn" href="${YT(a.id)}" target="_blank" rel="noopener">Watch on YouTube ↗</a>
         <div class="dlg-nav"><button class="icon-btn" type="button" data-step="-1" ${n===1?"disabled":""}>← Older</button><button class="icon-btn" type="button" data-step="1" ${n===A.length?"disabled":""}>Newer →</button></div>
